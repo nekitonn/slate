@@ -15,7 +15,11 @@ const fetch = require('node-fetch');
 
 const body = {
   prompt: "Describe the future of technology.",
-  title: "The Dawn of a New Technological Era"};
+  title: "The Dawn of a New Technological Era",
+  temperature: 0.5,
+  frequency_penalty: 0,
+  presence_penalty: 0
+};
 
 fetch('domain.com/v1/generate', {
   method: 'POST',
@@ -35,7 +39,10 @@ curl -X POST "domain.com/v1/generate" \
      -H "Content-Type: application/json" \
      -d '{
            "prompt": "Describe the future of technology.",
-           "title": "The Dawn of a New Technological Era"
+           "title": "The Dawn of a New Technological Era",
+           "temperature": 0.5,
+           "frequency_penalty": 0,
+           "presence_penalty": 0
          }'
 ```
 
@@ -76,15 +83,14 @@ Field | Type | Description
 `title` | String (Optional) | Title for the text to be generated.
 `outline` | String (Optional) | An outline structure you want the generated text to follow.
 `selected_text` | String (Optional) | A specific section of the text that you want to emphasize or build upon.
+`temperature` | Number (Optional) | The randomness of the output. A higher value makes the output more random. Default is `0.5`.
+`frequency_penalty` | Number (Optional) | Penalty for frequent tokens. Default is `0`.
+`presence_penalty` | Number (Optional) | Penalty for new tokens. Default is `0`.
 `stream` | Boolean (Optional) | A flag that if set to true, the response from OpenAI will be streamed. Default is `false`.
-
-
 
 <aside class="notice">
 Ensure you have the necessary authentication tokens and are abiding by rate limits when making requests.
 </aside>
-
-
 
 ### Errors
 
@@ -99,7 +105,6 @@ The API will return specific error messages for various issues, such as:
 Always check the error message in the response for specifics on what might have gone wrong with your request.
 </aside>
 ---
-
 
 # Citation Generator
 Generate citations in various styles using provided BibTeX input.
