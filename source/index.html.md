@@ -1,245 +1,173 @@
 ---
 title: API Reference
 
-language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
-  - shell
-  - ruby
-  - python
+language_tabs:
   - javascript
-
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
-
-includes:
-  - errors
-
-search: true
-
-code_clipboard: true
-
-meta:
-  - name: description
-    content: Documentation for the Kittn API
+  - shell
 ---
+# Text Generation Endpoint
+#### **HTTP Method**: `POST`
 
-# Introduction
+>### **Sample Request**
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+```javascript
+const fetch = require('node-fetch');
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+const body = {
+  prompt: "Describe the future of technology.",
+  title: "The Dawn of a New Technological Era"};
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
-
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
+fetch('domain.com/v1/generate', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_AUTH_TOKEN',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(body)
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ```
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
+curl -X POST "domain.com/v1/generate" \
+     -H "Authorization: YOUR_AUTH_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "prompt": "Describe the future of technology.",
+           "title": "The Dawn of a New Technological Era"
+         }'
 ```
 
-```javascript
-const kittn = require('kittn');
+>### **Example Response**
 
-let api = kittn.authorize('meowmeowmeow');
+>The response will contain a message with the generated text.
+
+```json
+{
+  "message": "The future of technology is bright..."
+}
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+## Generate Text using OpenAI's Model
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+Use this endpoint to pass in specific prompts and retrieve generated text from OpenAI's model. This can be particularly useful for generating creative content, completing texts, or generating various versions of a text based on a theme.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+### HTTP Request
 
-`Authorization: meowmeowmeow`
+
+POST https://ylpllmtfjfrxkrpojixz.supabase.co/functions/v1/generate
+
+
+### Headers
+
+- Authorization: Your authorization token
+- Content-Type: application/json
+
+### Request Body
+
+The following fields can be included in the request body:
+
+Field | Type | Description
+----- | ---- | -----------
+`prompt_id` | Integer | An optional ID that corresponds to a saved prompt in the database. If provided, this takes precedence over the `prompt` field.
+`prompt` | String | The prompt text you want to generate from. Only required if `prompt_id` is not provided.
+`context` | String (Optional) | Additional context for the prompt.
+`title` | String (Optional) | Title for the text to be generated.
+`outline` | String (Optional) | An outline structure you want the generated text to follow.
+`selected_text` | String (Optional) | A specific section of the text that you want to emphasize or build upon.
+`stream` | Boolean (Optional) | A flag that if set to true, the response from OpenAI will be streamed. Default is `false`.
+
+
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+Ensure you have the necessary authentication tokens and are abiding by rate limits when making requests.
 </aside>
 
-# Kittens
 
-## Get All Kittens
 
-```ruby
-require 'kittn'
+### Errors
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+The API will return specific error messages for various issues, such as:
 
-```python
-import kittn
+- Unauthorized requests.
+- Missing `prompt` or `prompt_id` fields.
+- Invalid or non-existent `prompt_id`.
+- Errors retrieving context or other issues with the request.
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+<aside class="warning">
+Always check the error message in the response for specifics on what might have gone wrong with your request.
+</aside>
+---
+
+
+# Citation Generator
+Generate citations in various styles using provided BibTeX input.
+
+#### **HTTP Method**: `POST`
+
+>### **Example Request**:
 
 ```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
+curl -X POST 'https://yourdomain.com/citation' \
+     -H 'Authorization: Bearer your_token' \
+     -H 'Content-Type: application/json' \
+     -d '{
+           "bibtexs": "@article{
+            sample2021, 
+            title={Sample Title}, 
+            author={Author Name}, 
+            journal={Sample Journal}, 
+            year={2021}
+            }",
+           "styles": ["apa", "modern-language-assosiation"]
+         }'
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
+>### **Example Response**:
 
 ```json
 [
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "name": "apa",
+    "bibliography": "...",
+    "citations": "..."
   },
   {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "name": "mla",
+    "bibliography": "...",
+    "citations": "..."
   }
 ]
 ```
 
-This endpoint retrieves all kittens.
+#### **Headers**:
 
-### HTTP Request
+- **X-Service-Key**: Service key for administrative access (Optional, if not using `Authorization` header).
+- **Authorization**: Auth token for user-level access.
 
-`GET http://example.com/api/kittens`
+#### **Request Payload**:
 
-### Query Parameters
+| Parameter | Type                             | Description                                      | Required |
+| --------- | -------------------------------- | ------------------------------------------------ | -------- |
+| `bibtexs` | string or string[]               | BibTeX data for which the citation is generated. | Yes      |
+| `styles`  | string or string[]               | Array of citation styles to generate. Should be one of the styles from this repository.           | Yes      |
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+#### **Response**:
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+Returns an array of objects, each containing:
 
-## Get a Specific Kitten
+| Field         | Type   | Description                                      |
+| ------------- | ------ | ------------------------------------------------ |
+| `name`        | string | The citation style used.                         |
+| `bibliography`| string | The generated bibliography in the chosen style.  |
+| `citations`   | string | The generated citations in the chosen style.     |
 
-```ruby
-require 'kittn'
+#### **Errors**:
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
+- **400**: Missing bibtexs or styles in the request.
+- **401**: Unauthorized.
 
-```python
-import kittn
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
 
-```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+---
